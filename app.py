@@ -41,5 +41,5 @@ if st.button("예측 시작"):
 
     st.line_chart(pd.DataFrame({
         "실제": df.Close[seq_length:].values,
-        "예측": preds_rescaled.flatten()
+        "예측": preds_rescaled.reshape(-1)
     }))
