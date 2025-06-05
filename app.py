@@ -43,17 +43,23 @@ if st.button("예측 시작"):
     st.write("실제값 형태:", df.Close[seq_length:].values.shape)
     st.write("예측값 형태:", preds_rescaled.shape)
     
-    # 데이터프레임 생성 전에 차원 확인
-    actual_values = df.Close[seq_length:].values
-    predicted_values = preds_rescaled.reshape(-1)
+    # 데이터프레임 생성 전에 차원 확인 및 변환
+    actual_values = df.Close[seq_length:].values.flatten()  # 1차원으로 변환
+    predicted_values = preds_rescaled.reshape(-1)  # 1차원으로 변환
     
     st.write("변환 후 실제값 형태:", actual_values.shape)
     st.write("변환 후 예측값 형태:", predicted_values.shape)
     
-    # 데이터프레임 생성
-    chart_data = pd.DataFrame({
-        "실제": actual_values,
-        "예측": predicted_values
-    })
+    # 인덱스 생성
+    dates = df.index[seq_length:]
+    
+    # 데이터프레임 생성 (인덱스 명시적 지정)
+    chart_data = pd.DataFrame(
+        {
+            "실제": actual_values,
+            "예측": predicted_values
+        },
+        index=dates
+    )
     
     st.line_chart(chart_data)
