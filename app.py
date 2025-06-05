@@ -52,7 +52,7 @@ if 'current_ticker' not in st.session_state:
     st.session_state.current_ticker = None
 
 # 종목 입력
-ticker = st.text_input("종목 코드를 입력하세요 (예: AAPL):")
+ticker = st.text_input("종목 코드를 입력하세요 (예: AAPL):", value=st.session_state.current_ticker if st.session_state.current_ticker else "")
 
 # 예측 시작 버튼
 predict_button = st.button("예측 시작")
@@ -226,7 +226,6 @@ if st.session_state.recent_tickers:
             with col1:
                 if st.button(recent_ticker, key=f"recent_{recent_ticker}"):
                     st.session_state.current_ticker = recent_ticker
-                    ticker = recent_ticker
                     st.rerun()
             with col2:
                 if st.button("×", key=f"delete_{recent_ticker}"):
