@@ -152,8 +152,8 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
     st.subheader("예측 결과 분석")
     
     # 오늘의 예측값
-    today_pred = predicted_values[-1]
-    yesterday_actual = actual_values[-2]
+    today_pred = float(predicted_values[-1])  # numpy 배열로 변환
+    yesterday_actual = float(actual_values[-2])  # numpy 배열로 변환
     change = ((today_pred - yesterday_actual) / yesterday_actual) * 100
     
     col1, col2 = st.columns(2)
@@ -172,12 +172,12 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
     
     # 향후 예측 (단순 선형 외삽)
     days = [7, 30, 365]  # 일주일, 한달, 1년
-    last_actual = actual_values[-1]
-    last_pred = predicted_values[-1]
+    last_actual = float(actual_values[-1])  # numpy 배열로 변환
+    last_pred = float(predicted_values[-1])  # numpy 배열로 변환
     
     for days_ahead in days:
         # 단순 선형 추세 계산 (최근 30일 기준)
-        recent_trend = (last_pred - predicted_values[-30]) / 30
+        recent_trend = (last_pred - float(predicted_values[-30])) / 30
         future_pred = last_pred + (recent_trend * days_ahead)
         future_change = ((future_pred - last_actual) / last_actual) * 100
         
