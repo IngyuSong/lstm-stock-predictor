@@ -39,16 +39,9 @@ if st.button("예측 시작"):
 
     preds_rescaled = scaler.inverse_transform(preds)
     
-    # 데이터 형태 확인 및 디버깅
-    st.write("실제값 형태:", df.Close[seq_length:].values.shape)
-    st.write("예측값 형태:", preds_rescaled.shape)
-    
     # 데이터프레임 생성 전에 차원 확인 및 변환
-    actual_values = df.Close[seq_length:].values.flatten()  # 1차원으로 변환
-    predicted_values = preds_rescaled.reshape(-1)  # 1차원으로 변환
-    
-    st.write("변환 후 실제값 형태:", actual_values.shape)
-    st.write("변환 후 예측값 형태:", predicted_values.shape)
+    actual_values = df.Close[seq_length:].values.flatten()
+    predicted_values = preds_rescaled.reshape(-1)
     
     # 인덱스 생성
     dates = df.index[seq_length:]
@@ -63,3 +56,34 @@ if st.button("예측 시작"):
     )
     
     st.line_chart(chart_data)
+    
+    # 예측값 비교 및 향후 예측 정보
+    st.subheader("예측 결과 분석")
+    
+    # 오늘의 예측값
+    today_pred = predicted_values[-1]
+    yesterday_actual = actual_values[-2]
+    change = ((today_pred - yesterday_actual) / yesterday_actual) * 100
+    
+    st.metric(
+        label="오늘의 예측 주가",
+        value=f"{today_pred:.2f}",
+        delta=f"{change:.2f}%"
+    )
+    
+    # 향후 예측 (단순 선형 외삽)
+    days = [7, 30, 365]  # 일주일, 한달, 1년
+    last_actual = actual_values[-1]
+    last_pred = predicted_values[-1]
+    
+    for days_ahead in days:
+        # 단순 선형 추세 계산 (최근 30일 기준)
+        recent_trend = (last_pred - predicted_values[-30]) / 30
+        future_pred = last_pred + (recent_trend * days_ahead)
+        future_change = ((future_pred - last_actual) / last_actual) * 100
+        
+        st.metric(
+            label=f"{days_ahead}일 후 예상 주가",
+            value=f"{future_pred:.2f}",
+            delta=f"{future_change:.2f}%"
+        )
