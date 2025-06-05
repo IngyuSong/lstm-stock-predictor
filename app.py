@@ -207,8 +207,8 @@ if st.session_state.recent_tickers:
             with col1:
                 if st.button(recent_ticker, key=f"recent_{recent_ticker}"):
                     st.session_state.current_ticker = recent_ticker
-                    st.experimental_rerun()
+                    st.rerun()
             with col2:
                 if st.button("×", key=f"delete_{recent_ticker}"):
                     st.session_state.recent_tickers.remove(recent_ticker)
-                    st.experimental_rerun()
+                    st.rerun()
