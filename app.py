@@ -147,6 +147,31 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
         index=dates
     )
     
+    # 미래 예측 데이터 생성 (365일)
+    last_date = dates[-1]
+    future_dates = pd.date_range(start=last_date + pd.Timedelta(days=1), periods=365, freq='D')
+    
+    # 미래 예측값 계산
+    last_pred = float(predicted_values[-1])
+    recent_trend = (last_pred - float(predicted_values[-30])) / 30
+    future_predictions = []
+    
+    for i in range(365):
+        future_pred = last_pred + (recent_trend * (i + 1))
+        future_predictions.append(future_pred)
+    
+    # 미래 예측 데이터프레임 생성
+    future_data = pd.DataFrame(
+        {
+            "실제": [None] * 365,  # 실제값은 없으므로 None
+            "예측": future_predictions
+        },
+        index=future_dates
+    )
+    
+    # 현재 데이터와 미래 예측 데이터 합치기
+    combined_chart_data = pd.concat([chart_data, future_data])
+    
     # 환율 정보 가져오기
     try:
         exchange_rate = float(yf.download("KRW=X", period="1d")['Close'].iloc[0])
@@ -214,7 +239,7 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
     
     # 차트 표시 (실제값과 예측값 모두)
     st.subheader("주가 예측 차트")
-    st.line_chart(chart_data[["실제", "예측"]])
+    st.line_chart(combined_chart_data[["실제", "예측"]])
 
 # 최근 검색 종목 목록 표시
 if st.session_state.recent_tickers:
