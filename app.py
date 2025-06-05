@@ -163,7 +163,8 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.metric("현재 주가", f"${current_price:.2f}")
+        st.metric("현재 주가 (USD)", f"${current_price:.2f}")
+        st.metric("현재 주가 (KRW)", f"₩{current_price * exchange_rate:,.0f}")
     with col2:
         st.metric("전일 대비", f"${price_change:.2f}")
     with col3:
@@ -211,9 +212,9 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
                 delta=f"{future_change:.2f}%"
             )
     
-    # 차트 표시 (예측값만)
+    # 차트 표시 (실제값과 예측값 모두)
     st.subheader("주가 예측 차트")
-    st.line_chart(chart_data["예측"])
+    st.line_chart(chart_data[["실제", "예측"]])
 
 # 최근 검색 종목 목록 표시
 if st.session_state.recent_tickers:
