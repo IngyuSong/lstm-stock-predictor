@@ -86,6 +86,11 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
     X_train, X_test = X[:train_size], X[train_size:]
     y_train, y_test = y[:train_size], y[train_size:]
     
+    # PyTorch 텐서로 변환
+    X_train = torch.FloatTensor(X_train)
+    y_train = torch.FloatTensor(y_train)
+    X_test = torch.FloatTensor(X_test)
+    
     # 모델 학습
     model = StockPredictor(input_dim=1, hidden_dim=50, num_layers=2, output_dim=1)
     criterion = nn.MSELoss()
