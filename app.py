@@ -38,8 +38,22 @@ if st.button("예측 시작"):
         preds = model(X_test).numpy()
 
     preds_rescaled = scaler.inverse_transform(preds)
-
-    st.line_chart(pd.DataFrame({
-        "실제": df.Close[seq_length:].values,
-        "예측": preds_rescaled.reshape(-1)
-    }))
+    
+    # 데이터 형태 확인 및 디버깅
+    st.write("실제값 형태:", df.Close[seq_length:].values.shape)
+    st.write("예측값 형태:", preds_rescaled.shape)
+    
+    # 데이터프레임 생성 전에 차원 확인
+    actual_values = df.Close[seq_length:].values
+    predicted_values = preds_rescaled.reshape(-1)
+    
+    st.write("변환 후 실제값 형태:", actual_values.shape)
+    st.write("변환 후 예측값 형태:", predicted_values.shape)
+    
+    # 데이터프레임 생성
+    chart_data = pd.DataFrame({
+        "실제": actual_values,
+        "예측": predicted_values
+    })
+    
+    st.line_chart(chart_data)
