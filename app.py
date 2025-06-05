@@ -128,8 +128,10 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
     actual_values = df.Close[seq_length:].values.flatten()
     predicted_values = preds_rescaled.reshape(-1)
     
-    # 인덱스 생성
-    dates = df.index[seq_length:]
+    # 데이터 길이 맞추기
+    test_size = len(predicted_values)
+    actual_values = actual_values[-test_size:]
+    dates = df.index[-test_size:]
     
     # 데이터프레임 생성 (인덱스 명시적 지정)
     chart_data = pd.DataFrame(
