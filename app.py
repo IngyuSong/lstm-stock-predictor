@@ -244,15 +244,41 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
 # 최근 검색 종목 목록 표시
 if st.session_state.recent_tickers:
     st.subheader("최근 검색 종목")
-    cols = st.columns(5)
+    
+    # 3개의 열로 구성
+    cols = st.columns(3)
+    
+    # 각 종목을 카드 형태로 표시
     for idx, recent_ticker in enumerate(st.session_state.recent_tickers):
-        with cols[idx]:
-            col1, col2 = st.columns([3, 1])
+        with cols[idx % 3]:
+            # 카드 스타일 적용
+            st.markdown("""
+                <style>
+                .ticker-card {
+                    padding: 1rem;
+                    border-radius: 0.5rem;
+                    background-color: #f0f2f6;
+                    margin-bottom: 1rem;
+                }
+                </style>
+            """, unsafe_allow_html=True)
+            
+            # 카드 컨테이너
+            st.markdown(f'<div class="ticker-card">', unsafe_allow_html=True)
+            
+            # 종목 코드와 삭제 버튼을 한 줄에 배치
+            col1, col2 = st.columns([4, 1])
+            
             with col1:
-                if st.button(recent_ticker, key=f"recent_{recent_ticker}"):
+                # 종목 코드를 클릭 가능한 버튼으로 표시
+                if st.button(f"📈 {recent_ticker}", key=f"recent_{recent_ticker}", use_container_width=True):
                     st.session_state.current_ticker = recent_ticker
                     st.rerun()
+            
             with col2:
-                if st.button("×", key=f"delete_{recent_ticker}"):
+                # 삭제 버튼
+                if st.button("🗑️", key=f"delete_{recent_ticker}", use_container_width=True):
                     st.session_state.recent_tickers.remove(recent_ticker)
                     st.rerun()
+            
+            st.markdown('</div>', unsafe_allow_html=True)
