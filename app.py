@@ -149,7 +149,7 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
     
     # 환율 정보 가져오기
     try:
-        exchange_rate = float(yf.download("KRW=X", period="1d")['Close'].iloc[-1])
+        exchange_rate = float(yf.download("KRW=X", period="1d")['Close'].iloc[0])
     except:
         exchange_rate = 1300.0  # 기본값 설정
     
@@ -157,9 +157,9 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
     st.subheader("예측 결과")
     
     # 현재 주가 정보 표시
-    current_price = df['Close'].iloc[-1]
-    price_change = df['Close'].iloc[-1] - df['Close'].iloc[-2]
-    price_change_pct = (price_change / df['Close'].iloc[-2]) * 100
+    current_price = float(df['Close'].iloc[-1])
+    price_change = float(df['Close'].iloc[-1] - df['Close'].iloc[-2])
+    price_change_pct = float((price_change / df['Close'].iloc[-2]) * 100)
     
     col1, col2, col3 = st.columns(3)
     with col1:
