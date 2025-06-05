@@ -11,6 +11,17 @@ import torch.optim as optim
 
 st.title("주식 가격 예측 LSTM 웹앱")
 
+# 시퀀스 생성 함수
+def create_sequences(data, seq_length):
+    xs = []
+    ys = []
+    for i in range(len(data) - seq_length):
+        x = data[i:(i + seq_length)]
+        y = data[i + seq_length]
+        xs.append(x)
+        ys.append(y)
+    return np.array(xs), np.array(ys)
+
 # 세션 상태 초기화
 if 'recent_tickers' not in st.session_state:
     st.session_state.recent_tickers = []
