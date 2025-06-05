@@ -144,9 +144,9 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
     
     # 환율 정보 가져오기
     try:
-        exchange_rate = yf.download("KRW=X", period="1d")['Close'].iloc[-1]
+        exchange_rate = float(yf.download("KRW=X", period="1d")['Close'].iloc[-1])
     except:
-        exchange_rate = 1300  # 기본값 설정
+        exchange_rate = 1300.0  # 기본값 설정
     
     # 예측값 비교 및 향후 예측 정보
     st.subheader("예측 결과 분석")
@@ -205,12 +205,7 @@ if st.session_state.recent_tickers:
     cols = st.columns(5)
     for idx, recent_ticker in enumerate(st.session_state.recent_tickers):
         with cols[idx]:
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                if st.button(recent_ticker, key=f"recent_{recent_ticker}"):
-                    st.session_state.current_ticker = recent_ticker
-                    st.rerun()
-            with col2:
-                if st.button("×", key=f"delete_{recent_ticker}"):
-                    st.session_state.recent_tickers.remove(recent_ticker)
-                    st.rerun()
+            if st.button(f"{recent_ticker} ×", key=f"recent_{recent_ticker}"):
+                st.session_state.current_ticker = recent_ticker
+                ticker = recent_ticker
+                st.rerun()
