@@ -9,7 +9,12 @@ import datetime
 import torch.nn as nn
 import torch.optim as optim
 
-st.title("주식 가격 예측 LSTM 웹앱")
+st.title("주식 가격 예측")
+
+# 홈 버튼 추가
+if st.button("🏠 홈"):
+    st.session_state.current_ticker = None
+    st.rerun()
 
 # LSTM 모델 클래스 정의
 class StockPredictor(nn.Module):
@@ -205,7 +210,13 @@ if st.session_state.recent_tickers:
     cols = st.columns(5)
     for idx, recent_ticker in enumerate(st.session_state.recent_tickers):
         with cols[idx]:
-            if st.button(f"{recent_ticker} ×", key=f"recent_{recent_ticker}"):
-                st.session_state.current_ticker = recent_ticker
-                ticker = recent_ticker
-                st.rerun()
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                if st.button(recent_ticker, key=f"recent_{recent_ticker}"):
+                    st.session_state.current_ticker = recent_ticker
+                    ticker = recent_ticker
+                    st.rerun()
+            with col2:
+                if st.button("×", key=f"delete_{recent_ticker}"):
+                    st.session_state.recent_tickers.remove(recent_ticker)
+                    st.rerun()
