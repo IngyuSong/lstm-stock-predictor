@@ -14,16 +14,18 @@ st.title("주식 가격 예측 LSTM 웹앱")
 # 세션 상태 초기화
 if 'recent_tickers' not in st.session_state:
     st.session_state.recent_tickers = []
+if 'current_ticker' not in st.session_state:
+    st.session_state.current_ticker = None
 
 # 종목 입력
-ticker = st.text_input("종목 코드를 입력하세요 (예: AAPL):", key="ticker_input")
+ticker = st.text_input("종목 코드를 입력하세요 (예: AAPL):")
 
 # 예측 시작 버튼
 predict_button = st.button("예측 시작")
 
 # 엔터키 처리
-if ticker and (predict_button or st.session_state.get('ticker_input') != ticker):
-    st.session_state['ticker_input'] = ticker
+if ticker and (predict_button or st.session_state.current_ticker != ticker):
+    st.session_state.current_ticker = ticker
     
     # 최근 검색 종목에 추가 (중복 제거)
     if ticker not in st.session_state.recent_tickers:
@@ -170,7 +172,7 @@ if st.session_state.recent_tickers:
             col1, col2 = st.columns([3, 1])
             with col1:
                 if st.button(recent_ticker, key=f"recent_{recent_ticker}"):
-                    st.session_state['ticker_input'] = recent_ticker
+                    st.session_state.current_ticker = recent_ticker
                     st.experimental_rerun()
             with col2:
                 if st.button("×", key=f"delete_{recent_ticker}"):
