@@ -154,25 +154,36 @@ if ticker and (predict_button or st.session_state.current_ticker != ticker):
         exchange_rate = 1300.0  # 기본값 설정
     
     # 예측값 비교 및 향후 예측 정보
-    st.subheader("예측 결과 분석")
+    st.subheader("예측 결과")
     
-    # 오늘의 예측값
-    today_pred = float(predicted_values[-1])  # numpy 배열로 변환
-    yesterday_actual = float(actual_values[-2])  # numpy 배열로 변환
-    change = ((today_pred - yesterday_actual) / yesterday_actual) * 100
+    # 현재 주가 정보 표시
+    current_price = df['Close'].iloc[-1]
+    price_change = df['Close'].iloc[-1] - df['Close'].iloc[-2]
+    price_change_pct = (price_change / df['Close'].iloc[-2]) * 100
     
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("현재 주가", f"${current_price:.2f}")
+    with col2:
+        st.metric("전일 대비", f"${price_change:.2f}")
+    with col3:
+        st.metric("등락률", f"{price_change_pct:.2f}%")
+    
+    st.markdown("---")
+    
+    # 예측 결과 표시
     col1, col2 = st.columns(2)
     with col1:
         st.metric(
             label="오늘의 예측 주가 (USD)",
-            value=f"${today_pred:.2f}",
-            delta=f"{change:.2f}%"
+            value=f"${predicted_values[-1]:.2f}",
+            delta=f"{((predicted_values[-1] - actual_values[-1]) / actual_values[-1]) * 100:.2f}%"
         )
     with col2:
         st.metric(
             label="오늘의 예측 주가 (KRW)",
-            value=f"₩{today_pred * exchange_rate:,.0f}",
-            delta=f"{change:.2f}%"
+            value=f"₩{predicted_values[-1] * exchange_rate:,.0f}",
+            delta=f"{((predicted_values[-1] - actual_values[-1]) / actual_values[-1]) * 100:.2f}%"
         )
     
     # 향후 예측 (단순 선형 외삽)
